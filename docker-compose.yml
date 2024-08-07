@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  node-service:
+    build:
+      context: ./node-api-server
+      dockerfile: Dockerfile
+    command: npm start
+    depends_on:
+      - python-service
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./node-api-server:/app
+    working_dir: /app
+    networks:
+      - default
+
+  python-service:
+    build:
+      context: ./python-program
+      dockerfile: Dockerfile
+    command: python app.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./python-program:/app
+    working_dir: /app
+    networks:
+      - default
+
+networks:
+  default:
+    name: distributed_llm_assignment-python-nodejs-_240801_default
