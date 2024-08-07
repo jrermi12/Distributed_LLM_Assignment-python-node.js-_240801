@@ -36,3 +36,33 @@ def select_model():
     #then reutrn a sucess message 
     return jsonify({"message": f"Model {model_name} selected for user {user_id}"}), 200
 
+# new route and function to handle query
+@app.route('/query', methods=['POST'])
+def query():
+
+    #extracting userId and query from the json
+    data = request.json
+    user_id = data['userId']
+    query_text = data['query']
+
+    #check if the userId exits in the user_conversation dictionary 
+    if user_id not in user_conversations:
+        #if the user does not exist respond with error message
+        return jsonify({"error": "User has not selected a model"}), 400
+
+    #if the userId exist the model selected and the histroy of the conversation is retrived
+    model = user_conversations[user_id]["model"]
+    history = user_conversations[user_id]["history"]
+
+    #apending the query to the conversation history
+    history.append({"role": "user", "content": query_text})
+    # sends the users query to the selected model to generate response
+    response = model(query_text, pad_token_id=50256)
+
+    #extracting the generated text from the model response
+    response_text = response[0]["generated_text"]
+
+    #appending the response text to the conversation history 
+    history.append({"role": "bot", "content": response_text})
+    # respinding the response_text 
+    return jsonify({"response": response_text}), 200
