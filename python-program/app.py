@@ -66,3 +66,17 @@ def query():
     history.append({"role": "bot", "content": response_text})
     # respinding the response_text 
     return jsonify({"response": response_text}), 200
+
+#created a route and function to send the the conversation history of a user by userId
+@app.route('/history/<user_id>', methods=['GET'])
+def get_history(user_id):
+    #check if the user hava any conversation by userId in user_conversation dictionary
+    if user_id not in user_conversations:
+        #if user_id not found send an error with error message no conversation found
+        return jsonify({"error": "No conversation history for this user"}), 400
+    #if user_id has conversation respond witht the history 
+    history = user_conversations[user_id]["history"]
+    return jsonify({"history": history}), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
