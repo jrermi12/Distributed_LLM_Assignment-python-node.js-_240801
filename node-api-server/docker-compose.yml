@@ -1,0 +1,17 @@
+version: '3'
+services:
+  python-service:
+    build:
+      context: ./python-program
+    ports:
+      - "5000:5000"
+
+  node-api:
+    build:
+      context: ./node-api-server
+    ports:
+      - "3000:3000"
+    depends_on:
+      - python-service
+    environment:
+      - PYTHON_SERVICE_URL=http://python-service:5000
