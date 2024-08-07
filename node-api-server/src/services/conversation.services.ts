@@ -2,10 +2,12 @@ import axios from "axios";
 import conversationModel from "../models/conversation.model";
 import NotFoundError from "../error/notFound.errors";
 import { ErrorCode } from "../error/custom.errors";
+import { validateEnv } from "../config/config";
+const PYTHON_SERVICE_URL = validateEnv().PYTHON_SERVICE_URL
 
 export const selectModels = async (userId: string, modelName: string) => {
     try {
-        const response = await axios.post('http://python-program:5000/select-model', { userId, modelName });
+        const response = await axios.post(`${PYTHON_SERVICE_URL}/select-model`, { userId, modelName });
         return response;
     } catch (error) {
         throw new Error('Error while selecting model: ' + error.message);
@@ -14,7 +16,7 @@ export const selectModels = async (userId: string, modelName: string) => {
 
 
 export const sendQuerys = async(userId: string, query:string) => {
-    const response = await axios.post('http://python-program:5000/query', { userId, query });
+    const response = await axios.post(`${PYTHON_SERVICE_URL}/query`, { userId, query });
     const { data } = response;
 
     const newConversation = new conversationModel({
