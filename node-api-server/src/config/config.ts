@@ -12,7 +12,8 @@ export const validateEnv = () => {
         return {
             port: +envVars.PORT,
             env: envVars.NODE_ENV,
-            PYTHON_SERVICE_URL: envVars.PYTHON_SERVICE_URL
+            PYTHON_SERVICE_URL: envVars.PYTHON_SERVICE_URL,
+            databaseUrl:envVars.databaseUrl
         };
     } catch (error) {
         if (error instanceof ZodError) {
